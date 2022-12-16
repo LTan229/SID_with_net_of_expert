@@ -58,7 +58,7 @@ numpy, pandas, pytorch
 
 3.  训练（pytorch）
 
-    1.  **骨干**（写用于训练和使用的代码+训练模型）
+    1.  **骨干**（写用于训练和使用的代码）
         1.  训练：所有label都是specialty label
             1.  输入：train_data, train_label, valid_data, valid_label
             2.  输出：模型（用pytorch的pt格式存state dict），每个epoch的准确率和loss（展示用）
