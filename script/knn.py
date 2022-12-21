@@ -20,7 +20,7 @@ proj_root_dir = os.path.abspath(os.path.join(os.getcwd(),".."))
 
 
 # load
-tSNE_result_dir = os.path.join(proj_root_dir, 'state_dict', 'tSNE.pkl')
+tSNE_result_dir = os.path.join(proj_root_dir, 'state_dict', 'tSNE_3D.pkl')
 with open(tSNE_result_dir, 'rb') as f:
     tSNE_result = pkl.load(f)
 

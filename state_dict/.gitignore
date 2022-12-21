@@ -1,4 +1,4 @@
 tSNE.pkl
-/knn_model
-/fft_result_wo_simplify
+knn_model/**
+fft_result_wo_simplify/**
 !.gitignore
