@@ -1,0 +1,200 @@
+Epoch: 00 | Batch: 000 | Loss: 2.80758 | Correct: 027/1024
+
+Epoch: 00 | Testing Accuracy: 140121.0/178167 (78.646%) |  Historical Best: 78.646%
+
+Epoch: 01 | Batch: 000 | Loss: 0.57125 | Correct: 813/1024
+
+Epoch: 01 | Testing Accuracy: 141069.0/178167 (79.178%) |  Historical Best: 79.178%
+
+Epoch: 02 | Batch: 000 | Loss: 0.53503 | Correct: 832/1024
+
+Epoch: 02 | Testing Accuracy: 144441.0/178167 (81.071%) |  Historical Best: 81.071%
+
+Epoch: 03 | Batch: 000 | Loss: 0.54926 | Correct: 815/1024
+
+Epoch: 03 | Testing Accuracy: 145293.0/178167 (81.549%) |  Historical Best: 81.549%
+
+Epoch: 04 | Batch: 000 | Loss: 0.52954 | Correct: 832/1024
+
+Epoch: 04 | Testing Accuracy: 145999.0/178167 (81.945%) |  Historical Best: 81.945%
+
+Epoch: 05 | Batch: 000 | Loss: 0.48657 | Correct: 844/1024
+
+Epoch: 05 | Testing Accuracy: 146244.0/178167 (82.083%) |  Historical Best: 82.083%
+
+Epoch: 06 | Batch: 000 | Loss: 0.47139 | Correct: 838/1024
+
+Epoch: 06 | Testing Accuracy: 146520.0/178167 (82.237%) |  Historical Best: 82.237%
+
+Epoch: 07 | Batch: 000 | Loss: 0.47715 | Correct: 861/1024
+
+Epoch: 07 | Testing Accuracy: 147121.0/178167 (82.575%) |  Historical Best: 82.575%
+
+Epoch: 08 | Batch: 000 | Loss: 0.43797 | Correct: 856/1024
+
+Epoch: 08 | Testing Accuracy: 146864.0/178167 (82.431%) |  Historical Best: 82.575%
+
+Epoch: 09 | Batch: 000 | Loss: 0.48371 | Correct: 847/1024
+
+Epoch: 09 | Testing Accuracy: 147461.0/178167 (82.766%) |  Historical Best: 82.766%
+
+Epoch: 10 | Batch: 000 | Loss: 0.42549 | Correct: 857/1024
+
+Epoch: 10 | Testing Accuracy: 148047.0/178167 (83.095%) |  Historical Best: 83.095%
+
+Epoch: 11 | Batch: 000 | Loss: 0.40517 | Correct: 876/1024
+
+Epoch: 11 | Testing Accuracy: 148453.0/178167 (83.322%) |  Historical Best: 83.322%
+
+Epoch: 12 | Batch: 000 | Loss: 0.45234 | Correct: 859/1024
+
+Epoch: 12 | Testing Accuracy: 148861.0/178167 (83.551%) |  Historical Best: 83.551%
+
+Epoch: 13 | Batch: 000 | Loss: 0.41996 | Correct: 860/1024
+
+Epoch: 13 | Testing Accuracy: 148712.0/178167 (83.468%) |  Historical Best: 83.551%
+
+Epoch: 14 | Batch: 000 | Loss: 0.43430 | Correct: 857/1024
+
+Epoch: 14 | Testing Accuracy: 149168.0/178167 (83.724%) |  Historical Best: 83.724%
+
+Epoch: 15 | Batch: 000 | Loss: 0.41015 | Correct: 877/1024
+
+Epoch: 15 | Testing Accuracy: 148672.0/178167 (83.445%) |  Historical Best: 83.724%
+
+Epoch: 16 | Batch: 000 | Loss: 0.41496 | Correct: 868/1024
+
+Epoch: 16 | Testing Accuracy: 149387.0/178167 (83.847%) |  Historical Best: 83.847%
+
+Epoch: 17 | Batch: 000 | Loss: 0.45106 | Correct: 845/1024
+
+Epoch: 17 | Testing Accuracy: 148842.0/178167 (83.541%) |  Historical Best: 83.847%
+
+Epoch: 18 | Batch: 000 | Loss: 0.43753 | Correct: 858/1024
+
+Epoch: 18 | Testing Accuracy: 149349.0/178167 (83.825%) |  Historical Best: 83.847%
+
+Epoch: 19 | Batch: 000 | Loss: 0.40429 | Correct: 866/1024
+
+Epoch: 19 | Testing Accuracy: 149548.0/178167 (83.937%) |  Historical Best: 83.937%
+
+Epoch: 20 | Batch: 000 | Loss: 0.40267 | Correct: 880/1024
+
+Epoch: 20 | Testing Accuracy: 149886.0/178167 (84.127%) |  Historical Best: 84.127%
+
+Epoch: 21 | Batch: 000 | Loss: 0.40776 | Correct: 874/1024
+
+Epoch: 21 | Testing Accuracy: 149465.0/178167 (83.890%) |  Historical Best: 84.127%
+
+Epoch: 22 | Batch: 000 | Loss: 0.39769 | Correct: 879/1024
+
+Epoch: 22 | Testing Accuracy: 149469.0/178167 (83.893%) |  Historical Best: 84.127%
+
+Epoch: 23 | Batch: 000 | Loss: 0.38273 | Correct: 884/1024
+
+Epoch: 23 | Testing Accuracy: 149451.0/178167 (83.883%) |  Historical Best: 84.127%
+
+Epoch: 24 | Batch: 000 | Loss: 0.40736 | Correct: 883/1024
+
+Epoch: 24 | Testing Accuracy: 149739.0/178167 (84.044%) |  Historical Best: 84.127%
+
+Epoch: 25 | Batch: 000 | Loss: 0.38706 | Correct: 875/1024
+
+Epoch: 25 | Testing Accuracy: 150250.0/178167 (84.331%) |  Historical Best: 84.331%
+
+Epoch: 26 | Batch: 000 | Loss: 0.40470 | Correct: 861/1024
+
+Epoch: 26 | Testing Accuracy: 150043.0/178167 (84.215%) |  Historical Best: 84.331%
+
+Epoch: 27 | Batch: 000 | Loss: 0.40280 | Correct: 882/1024
+
+Epoch: 27 | Testing Accuracy: 149519.0/178167 (83.921%) |  Historical Best: 84.331%
+
+Epoch: 28 | Batch: 000 | Loss: 0.38514 | Correct: 884/1024
+
+Epoch: 28 | Testing Accuracy: 150278.0/178167 (84.347%) |  Historical Best: 84.347%
+
+Epoch: 29 | Batch: 000 | Loss: 0.33737 | Correct: 891/1024
+
+Epoch: 29 | Testing Accuracy: 150137.0/178167 (84.268%) |  Historical Best: 84.347%
+
+Epoch: 30 | Batch: 000 | Loss: 0.35533 | Correct: 890/1024
+
+Epoch: 30 | Testing Accuracy: 150520.0/178167 (84.483%) |  Historical Best: 84.483%
+
+Epoch: 31 | Batch: 000 | Loss: 0.33198 | Correct: 894/1024
+
+Epoch: 31 | Testing Accuracy: 149304.0/178167 (83.800%) |  Historical Best: 84.483%
+
+Epoch: 32 | Batch: 000 | Loss: 0.36327 | Correct: 893/1024
+
+Epoch: 32 | Testing Accuracy: 150539.0/178167 (84.493%) |  Historical Best: 84.493%
+
+Epoch: 33 | Batch: 000 | Loss: 0.38432 | Correct: 878/1024
+
+Epoch: 33 | Testing Accuracy: 150535.0/178167 (84.491%) |  Historical Best: 84.493%
+
+Epoch: 34 | Batch: 000 | Loss: 0.32194 | Correct: 911/1024
+
+Epoch: 34 | Testing Accuracy: 150492.0/178167 (84.467%) |  Historical Best: 84.493%
+
+Epoch: 35 | Batch: 000 | Loss: 0.34195 | Correct: 892/1024
+
+Epoch: 35 | Testing Accuracy: 150114.0/178167 (84.255%) |  Historical Best: 84.493%
+
+Epoch: 36 | Batch: 000 | Loss: 0.33985 | Correct: 896/1024
+
+Epoch: 36 | Testing Accuracy: 150512.0/178167 (84.478%) |  Historical Best: 84.493%
+
+Epoch: 37 | Batch: 000 | Loss: 0.34392 | Correct: 896/1024
+
+Epoch: 37 | Testing Accuracy: 149824.0/178167 (84.092%) |  Historical Best: 84.493%
+
+Epoch: 38 | Batch: 000 | Loss: 0.35992 | Correct: 890/1024
+
+Epoch: 38 | Testing Accuracy: 150357.0/178167 (84.391%) |  Historical Best: 84.493%
+
+Epoch: 39 | Batch: 000 | Loss: 0.33022 | Correct: 902/1024
+
+Epoch: 39 | Testing Accuracy: 150504.0/178167 (84.474%) |  Historical Best: 84.493%
+
+Epoch: 40 | Batch: 000 | Loss: 0.31929 | Correct: 900/1024
+
+Epoch: 40 | Testing Accuracy: 150264.0/178167 (84.339%) |  Historical Best: 84.493%
+
+Epoch: 41 | Batch: 000 | Loss: 0.29589 | Correct: 916/1024
+
+Epoch: 41 | Testing Accuracy: 150478.0/178167 (84.459%) |  Historical Best: 84.493%
+
+Epoch: 42 | Batch: 000 | Loss: 0.35139 | Correct: 877/1024
+
+Epoch: 42 | Testing Accuracy: 150752.0/178167 (84.613%) |  Historical Best: 84.613%
+
+Epoch: 43 | Batch: 000 | Loss: 0.29952 | Correct: 915/1024
+
+Epoch: 43 | Testing Accuracy: 150366.0/178167 (84.396%) |  Historical Best: 84.613%
+
+Epoch: 44 | Batch: 000 | Loss: 0.36365 | Correct: 887/1024
+
+Epoch: 44 | Testing Accuracy: 150370.0/178167 (84.398%) |  Historical Best: 84.613%
+
+Epoch: 45 | Batch: 000 | Loss: 0.33293 | Correct: 897/1024
+
+Epoch: 45 | Testing Accuracy: 150480.0/178167 (84.460%) |  Historical Best: 84.613%
+
+Epoch: 46 | Batch: 000 | Loss: 0.33922 | Correct: 891/1024
+
+Epoch: 46 | Testing Accuracy: 150409.0/178167 (84.420%) |  Historical Best: 84.613%
+
+Epoch: 47 | Batch: 000 | Loss: 0.36704 | Correct: 890/1024
+
+Epoch: 47 | Testing Accuracy: 150353.0/178167 (84.389%) |  Historical Best: 84.613%
+
+Epoch: 48 | Batch: 000 | Loss: 0.27230 | Correct: 915/1024
+
+Epoch: 48 | Testing Accuracy: 150522.0/178167 (84.484%) |  Historical Best: 84.613%
+
+Epoch: 49 | Batch: 000 | Loss: 0.33610 | Correct: 893/1024
+
+Epoch: 49 | Testing Accuracy: 150607.0/178167 (84.531%) |  Historical Best: 84.613%
+

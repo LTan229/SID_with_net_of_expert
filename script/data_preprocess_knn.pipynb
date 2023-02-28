@@ -1,0 +1,277 @@
+{
+ "cells": [
+  {
+   "attachments": {},
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "1. 加载数据\n",
+    "2. 切片\n",
+    "3. 删除无信息（安静）片段\n",
+    "4. 精简数据（how？）\n",
+    "5. fft\n",
+    "6. t-SNE\n",
+    "7. knn cluster\n",
+    "8. write into static dict"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "!pip install SpeechRecognition\n",
+    "!pip install soundfile\n",
+    "## !pip install cuml"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import os\n",
+    "import shutil\n",
+    "from tqdm import tqdm\n",
+    "import random\n",
+    "import math\n",
+    "from glob import glob\n",
+    "\n",
+    "import soundfile as sf            # To read .flac files.   \n",
+    "import speech_recognition as sr   # pip install SpeechRecognition.\n",
+    "from sklearn.manifold import TSNE\n",
+    "# import cuml\n",
+    "# import cudf\n",
+    "# from cuml.manifold import TSNE as cudaTSNE\n",
+    "import pickle as pkl\n",
+    "\n",
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "import matplotlib.pyplot as plt\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# static parameters\n",
+    "durationCheck = 10.      # Only consider files with 10 or more seconds of audio.\n",
+    "deltaT        = 0.2      # Audio frame size is 0.2 seconds.\n",
+    "noisy         = 0.1      # This sets the limit for static, i.e. pauses in speech.\n",
+    "lim1 = 10; lim2 = 410    # Lower and upper frequencies. \n",
+    "                         # For the above parameters and 16 kHz sampling, this range is about 50 - 2000 Hz.  \n",
+    "\n",
+    "fft_numFeatures = lim2-lim1"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# get the current directory\n",
+    "proj_root_dir = os.path.abspath(os.path.join(os.getcwd(),\"..\"))\n",
+    "proj_root_dir\n",
+    "\n",
+    "train_folder_dir = os.path.join(proj_root_dir, 'data', 'train')\n",
+    "state_dict_folder_dir = os.path.join(proj_root_dir, 'state_dict')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# fft calculation\n",
+    "\n",
+    "# Read data from a folder into a list.\n",
+    "def getSpeakerData(speaker_folder_name):\n",
+    "  flac_file_list = glob(os.path.join(train_folder_dir, speaker_folder_name, '*.flac'))\n",
+    "  flac_dir_list = []\n",
+    "  for flac_file_dir in flac_file_list:\n",
+    "    data,samplerate = sf.read(flac_file_dir)  \n",
+    "    duration = len(data)*1./samplerate\n",
+    "    if duration >= durationCheck: \n",
+    "      flac_dir_list.append(flac_file_dir)\n",
+    "\n",
+    "  chunksF = []\n",
+    "\n",
+    "  for flac_dir in flac_dir_list:\n",
+    "    data,samplerate = sf.read(flac_dir)  \n",
+    "    duration = len(data)*1./samplerate\n",
+    "\n",
+    "    # Divide audio data into frames, or chunks. \n",
+    "    numChunks = int(duration/deltaT)\n",
+    "    sizeChunk = int(len(data)/numChunks)\n",
+    "    for lp in range(0,numChunks):    \n",
+    "      chunk = data[lp*sizeChunk:(lp+1)*sizeChunk]      # get a chunk of speech.     \n",
+    "      chunksF.append(np.abs(np.fft.rfft(chunk))[lim1:lim2])  # take the FFT.\n",
+    "      # shape of chunksF: slice_num * 400\n",
+    "\n",
+    "    # Delete quiet parts of speech, i.e. pauses.\n",
+    "    # Most of the power is in the bottom 50% of frequencies.\n",
+    "    mu = np.mean([np.mean(chunksF[i][:fft_numFeatures//2]) for i in range(0,len(chunksF))])\n",
+    "    speaker_fft = []\n",
+    "    for chunkF in chunksF:\n",
+    "      if np.mean(chunkF[:fft_numFeatures//2]) > noisy*mu:\n",
+    "        speaker_fft.append(chunkF)\n",
+    "        # shape of speaker_fft: slice_w_information_num * 400\n",
+    "    \n",
+    "  return speaker_fft\n",
+    "\n",
+    "# Return data for all speakers.\n",
+    "def getDataSpeakers(division):\n",
+    "  dataSpeakers = []\n",
+    "  for speaker in tqdm(sorted(os.listdir(train_folder_dir))):\n",
+    "    # print (\"Getting data for speaker: \"+speaker)\n",
+    "    dataSpeakers.append(getSpeakerData(speaker))\n",
+    "    # shape pf dataSpeakers: speaker_num * slice_w_info_num * 400\n",
+    "\n",
+    "  N = np.sum([np.shape(s)[0] for s in dataSpeakers])\n",
+    "  tX = np.mat(np.zeros((N,fft_numFeatures)))\n",
+    "  tY = []\n",
+    "  speakerIndices = [0]    # Index corresponding to start of speaker 'n'\n",
+    "  \n",
+    "  ctr = 0; lp = 0\n",
+    "  for dataSpeaker in dataSpeakers:\n",
+    "    for j in range(0,len(dataSpeaker)):\n",
+    "      for k in range(0,fft_numFeatures):\n",
+    "        tX[ctr,k] = dataSpeaker[j][k]\n",
+    "      tY.append(lp)\n",
+    "      ctr += 1  \n",
+    "    speakerIndices.append(ctr)\n",
+    "    lp += 1  \n",
+    "          \n",
+    "  return tX,tY,speakerIndices"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "100%|██████████| 250/250 [13:30<00:00,  3.24s/it]\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "(890832, 400) (890832,)\n",
+      "[0, 3650, 7201, 10359, 14048, 17013, 20314, 24094, 27916, 31546, 34856, 38789, 42464, 46112, 47149, 51585, 54519, 58566, 62226, 66093, 68765, 72126, 75933, 79924, 84245, 88204, 91834, 95642, 99009, 102640, 105770, 108934, 112755, 116612, 120566, 124878, 128706, 131840, 135547, 138740, 141234, 145418, 148843, 152095, 155520, 159346, 163149, 166726, 170369, 174148, 178114, 181995, 185619, 189572, 193905, 197345, 201424, 205386, 208756, 212561, 217408, 220975, 224581, 227512, 231245, 234814, 238309, 240510, 244101, 247141, 250840, 254531, 257907, 261665, 264651, 268076, 272187, 276252, 280357, 283882, 287849, 291296, 293157, 296767, 299990, 301603, 304875, 308798, 311652, 315156, 319373, 323210, 327191, 330950, 334811, 338223, 341625, 345355, 349213, 352937, 356612, 359509, 363569, 367398, 371042, 374740, 378333, 381844, 385455, 389616, 393245, 397141, 400865, 404708, 408332, 412095, 415234, 418707, 422654, 426583, 430437, 434202, 437474, 440874, 444794, 448730, 452339, 455800, 459962, 464055, 468232, 471822, 474476, 478101, 482021, 484695, 488468, 492263, 494277, 497929, 501953, 505671, 509421, 512902, 515814, 518951, 522806, 525229, 528589, 532303, 536211, 539642, 542641, 546544, 550388, 553924, 557443, 561185, 565100, 568875, 572815, 576257, 579953, 584369, 588352, 592174, 596356, 600488, 604135, 607849, 611944, 615916, 618859, 622520, 626287, 629885, 633223, 637075, 640488, 643841, 645694, 649531, 652848, 655555, 659713, 662644, 666805, 670220, 673551, 674808, 678130, 681774, 685854, 689959, 693572, 698070, 701593, 705248, 709096, 712904, 716212, 719884, 723612, 726925, 730087, 733740, 737570, 741008, 744898, 748262, 751675, 755674, 758830, 762462, 766245, 770397, 772986, 776401, 780052, 783697, 787392, 791127, 794897, 798531, 802175, 805438, 808565, 812528, 816259, 819973, 823620, 827276, 830750, 834500, 837101, 840553, 843838, 847684, 851134, 855108, 857745, 860425, 864562, 868061, 871789, 874856, 878509, 881713, 885547, 888117, 890832]\n"
+     ]
+    }
+   ],
+   "source": [
+    "# overall fft information\n",
+    "trnX,trnY,trnIdx = getDataSpeakers('train')\n",
+    "print(np.shape(trnX), np.shape(trnY))\n",
+    "trnRows = np.shape(trnX)[0]\n",
+    "print(trnIdx)   # Start location of speaker 'i'."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "try:\n",
+    "    os.mkdir(os.path.join(state_dict_folder_dir, 'fft_result_wo_simplify'))\n",
+    "except OSError:\n",
+    "    pass\n",
+    "\n",
+    "with open(os.path.join(state_dict_folder_dir, 'fft_result_wo_simplify', 'trnX.pkl'), 'wb') as f:\n",
+    "    pkl.dump(trnX, f)\n",
+    "with open(os.path.join(state_dict_folder_dir, 'fft_result_wo_simplify', 'trnY.pkl'), 'wb') as f:\n",
+    "    pkl.dump(trnY, f)\n",
+    "with open(os.path.join(state_dict_folder_dir, 'fft_result_wo_simplify', 'trnIdx.pkl'), 'wb') as f:\n",
+    "    pkl.dump(trnIdx, f)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "KeyboardInterrupt",
+     "evalue": "",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mKeyboardInterrupt\u001b[0m                         Traceback (most recent call last)",
+      "Cell \u001b[0;32mIn[4], line 4\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[39m# t-SNE dimentional reduction\u001b[39;00m\n\u001b[1;32m      3\u001b[0m \u001b[39mwith\u001b[39;00m \u001b[39mopen\u001b[39m(\u001b[39m'\u001b[39m\u001b[39m/data1/home/xiruiling/course/AdvanceArtificialIntelligence/AAI_Proj/state_dict/fft_result_wo_simplify/trnX.pkl\u001b[39m\u001b[39m'\u001b[39m, \u001b[39m'\u001b[39m\u001b[39mrb\u001b[39m\u001b[39m'\u001b[39m) \u001b[39mas\u001b[39;00m f:\n\u001b[0;32m----> 4\u001b[0m     trnX \u001b[39m=\u001b[39m pkl\u001b[39m.\u001b[39;49mload(f)\n\u001b[1;32m      5\u001b[0m \u001b[39mprint\u001b[39m(\u001b[39m\"\u001b[39m\u001b[39mThe original dimension: \u001b[39m\u001b[39m\"\u001b[39m, np\u001b[39m.\u001b[39marray(trnX)\u001b[39m.\u001b[39mshape)\n\u001b[1;32m      6\u001b[0m x_tsne \u001b[39m=\u001b[39m TSNE(n_components\u001b[39m=\u001b[39m\u001b[39m2\u001b[39m,random_state\u001b[39m=\u001b[39m\u001b[39m0\u001b[39m)\u001b[39m.\u001b[39mfit_transform(trnX)\n",
+      "\u001b[0;31mKeyboardInterrupt\u001b[0m: "
+     ]
+    }
+   ],
+   "source": [
+    "# t-SNE dimentional reduction\n",
+    "\n",
+    "with open('/data1/home/xiruiling/course/AdvanceArtificialIntelligence/AAI_Proj/state_dict/fft_result_wo_simplify/trnX.pkl', 'rb') as f:\n",
+    "    trnX = pkl.load(f)\n",
+    "print(\"The original dimension: \", np.array(trnX).shape)\n",
+    "x_tsne = TSNE(n_components=2,random_state=0).fit_transform(trnX)\n",
+    "# x_tsne = cudaTSNE(n_components=2, perplexity=50, learning_rate=20).fit_transform(trnX)\n",
+    "x_tsne\n",
+    "# print(\"after t-SNE: \", x_tsne.shape)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# visualize the t-SNE result\n",
+    "x_min, x_max = x_tsne.min(0), x_tsne.max(0)\n",
+    "X_norm = (x_tsne - x_min) / (x_max - x_min)  # 归一化\n",
+    "plt.figure(figsize=(8, 8))\n",
+    "for i in range(X_norm.shape[0]):\n",
+    "    plt.text(X_norm[i, 0], X_norm[i, 1], str(y[i]), color=plt.cm.Set1(y[i]), \n",
+    "             fontdict={'weight': 'bold', 'size': 9})\n",
+    "plt.xticks([])\n",
+    "plt.yticks([])\n",
+    "plt.show()"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "TestEnv",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.13"
+  },
+  "orig_nbformat": 4,
+  "vscode": {
+   "interpreter": {
+    "hash": "638fd99b6f8315570d0eadb3c3caa9c92c17ee6381122f56dcae46cd26d849db"
+   }
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

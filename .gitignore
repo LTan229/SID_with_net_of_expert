@@ -1,0 +1,6 @@
+/.vscode/
+/.idea/
+/.history/
+*/__pycache__
+/__pycache__
+state_dict/
